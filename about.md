@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Sébastien REMY
+title: About
 ---
 <div class="blurb">
 	<h1>Sample Jekyll website</h1>
