@@ -180,3 +180,33 @@ do
   fi
 done | less
 ```
+
+
+## Encoding
+### Hexadecimal display
+```bash
+hexdump -C <file>
+xxd -g1 <file>
+```
+
+### Charset conversion
+```bash
+$ env | grep LANG
+LANG=fr_FR.UTF-8
+$ locale
+LANG=fr_FR.UTF-8
+LC_CTYPE="fr_FR.UTF-8"
+...
+$ echo "été €" > charset.txt
+$ hexdump -C charset.txt
+00000000  c3 a9 74 c3 a9 20 e2 82  ac 0a                    |..t.. ....|
+$ iconv -f UTF8 -t CP1252 charset.txt | hexdump -C
+00000000  e9 74 e9 20 80 0a                                 |.t. ..|
+$ iconv -f UTF8 -t ISO8859-1 charset.txt | hexdump -C
+iconv: charset.txt:1:4: cannot convert
+00000000  e9 74 e9 20                                       |.t. |
+$ iconv -f UTF8 -t ISO8859-15 charset.txt | hexdump -C
+00000000  e9 74 e9 20 a4 0a                                 |.t. ..|
+
+# iconv -f <from-encoding> -t <to-encoding> <file>
+```
