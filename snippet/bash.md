@@ -95,9 +95,15 @@ find -type f -printf "%T@ %Tc %p\n" | sort -k 1nr | sed 's/^[^ ]* //' | head -n 
 
 
 
-Find/Replace in files with sed
+Find/Replace in files with sed or tr
 ```bash
 sed -i "s/rechercher/remplacer/g" *
+$ echo "chat" | tr a u
+chut
+$ echo "chat" | tr [a-z] [A-Z]
+CHAT
+$ echo -e "Text \t with    large     spaces." | tr -s [:blank:] " "
+Text with large spaces.
 ```
 
 Delete lines containing a pattern:
@@ -143,6 +149,27 @@ for i in *.csv.gz; do if [ -f ${i%.gz} ]; then echo "rm ${i%.gz}"; fi; done
 for i in *.csv.gz; do if [ -f ${i%.gz} ]; then echo "rm ${i%.gz}"; rm ${i%.gz}; fi; done
 ```
 
+## TAR files
+Show the content of tar.gz file
+```
+tar -tvf file.tar
+tar -ztvf file.tar.gz
+tar -jtvf file.tar.bz2
+```
+
+Extract the content of tar.gz file in a specific folder
+```
+tar -zxvf tarball.tar.gz -C <directory>
+```
+Create a tar.gz 
+```
+tar -zcvf ../tarball.tar.gz file1 file2
+```
+Gzip a file keeping the original file
+```
+gzip -k <file>
+```
+
 ## grep options ##
 ```bash
 -l, --files-with-matches
@@ -181,6 +208,9 @@ do
 done | less
 ```
 
+## Links
+ln -s <targetfile> <creationdir/linkname>
+
 
 ## Encoding
 ### Hexadecimal display
@@ -209,4 +239,66 @@ $ iconv -f UTF8 -t ISO8859-15 charset.txt | hexdump -C
 00000000  e9 74 e9 20 a4 0a                                 |.t. ..|
 
 # iconv -f <from-encoding> -t <to-encoding> <file>
+```
+
+## Network
+
+### DNS
+```
+$ dig +noall +answer google.com
+google.com.             46      IN      A       216.58.198.206
+$ host 216.58.198.206
+206.198.58.216.in-addr.arpa domain name pointer par10s27-in-f14.1e100.net.
+206.198.58.216.in-addr.arpa domain name pointer par10s27-in-f206.1e100.net.
+$ dig -x 216.58.198.206
+;; ANSWER SECTION:
+206.198.58.216.in-addr.arpa. 79054 IN   PTR     par10s27-in-f206.1e100.net.
+206.198.58.216.in-addr.arpa. 79054 IN   PTR     par10s27-in-f14.1e100.net.
+$ nslookup google.com
+Server:         192.168.0.254
+Address:        192.168.0.254#53
+
+Non-authoritative answer:
+Name:   google.com
+Address: 216.58.198.206
+Name:   google.com
+Address: 2a00:1450:4007:80c::200e
+```
+
+### Netcat
+```
+$ printf "GET / HTTP/1.0\r\nHost: google.com\r\n\r\n" | nc 216.58.198.206 80
+HTTP/1.0 301 Moved Permanently
+Location: http://www.google.fr/
+Content-Type: text/html; charset=UTF-8
+Date: Fri, 13 Apr 2018 22:35:00 GMT
+Expires: Sun, 13 May 2018 22:35:00 GMT
+Cache-Control: public, max-age=2592000
+Server: gws
+Content-Length: 218
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>301 Moved</TITLE></HEAD><BODY>
+<H1>301 Moved</H1>
+The document has moved
+<A HREF="http://www.google.fr/">here</A>.
+</BODY></HTML>
+$ printf "GET / HTTP/1.0\r\nHost: www.google.fr\r\n\r\n" | nc 216.58.198.206 80
+```
+
+Connect via HTTP proxy with authentication with username “user”
+```
+$ nc -x10.2.3.4:8080 -Xconnect -Puser internet.example.com 80
+```
+
+Scan port range, timeout 1s, without DNS query
+```
+$ nc -zvn -w1 host.example.com 20-25,80,443
+```
+
+Listening on localhost on port 8080, keep listening
+```
+$ nc -lk 8080
 ```
