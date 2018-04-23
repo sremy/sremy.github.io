@@ -13,6 +13,51 @@ find -L . ! -type d -printf "%Tc %11s %p\n" | sort -r -n -k2
 find -L . ! -type d -ls | sort -r -n -k7
 ```
 
+Builtin functions
+```bash
+for n in {1..100}
+do
+    echo $n $((n*n)) $[n*(n+1)/2]
+done
+```
+
+Make bash your default shell if you don't have admin rights:
+```bash
+$ chsh
+```
+Or put following lines at the end of `.profile` file if access rights are centralized (kerberos, LDAP)
+```bash
+if [ $SHELL == "/bin/ksh" ]
+then
+  setenv SHELL /bin/bash
+  exec "$SHELL" --login
+  source /etc/bashrc
+fi
+```
+
+Expression-based substring deletion
+
+- Form # : ${variable#delete_shortest_from_front}
+- Form ##: ${variable##delete_longest_from_front}
+- Form % : ${variable%delete_shortest_from_back}
+- Form %%: ${variable%%delete_longest_from_back}
+```bash
+$ variable="This is a test string"
+$ echo "${variable#* }"
+is a test string
+$ echo "${variable##* }"
+string
+$ echo "${variable% *}"
+This is a test
+$ echo "${variable%% *}"
+This
+```
+String Length
+```bash
+$ echo ${#variable}
+21
+```
+
 ### CSV and AWK
 - Count the number of fields in the first line:
 ```bash
@@ -149,6 +194,15 @@ for i in *.csv.gz; do if [ -f ${i%.gz} ]; then echo "rm ${i%.gz}"; fi; done
 for i in *.csv.gz; do if [ -f ${i%.gz} ]; then echo "rm ${i%.gz}"; rm ${i%.gz}; fi; done
 ```
 
+Search files modified after a given date and copy them while keeping subdirectories tree structure in the destination folder, 
+can be used for quick incremental backup
+```bash
+find . -type f -newermt "Feb 14" -exec cp --parents {} destination/ \;
+
+find . -type f -newermt "Feb 14" -exec bash -c 'targetDir="destination"; if [ ! -d "$targetDir/"$(dirname "{}") ]; then mkdir -p "$targetDir/"$(dirname "{}"); fi; cp -i {} "$targetDir/"$(dirname "{}")/$(basename "{}")' \;
+```
+
+
 ## TAR files
 Show the content of tar.gz file
 ```
@@ -165,9 +219,15 @@ Create a tar.gz
 ```
 tar -zcvf ../tarball.tar.gz file1 file2
 ```
-Gzip a file keeping the original file
+Gzip/Gunzip a file keeping the original file
 ```
-gzip -k <file>
+gzip -k file
+gunzip -k file.gz
+gunzip -kc file.gz > /destinationDir/file
+```
+Unzip a set of files in a directory:
+```
+unzip \*.jar -d destination
 ```
 
 ## grep options ##
