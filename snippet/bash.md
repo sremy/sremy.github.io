@@ -58,6 +58,9 @@ $ echo ${#variable}
 21
 ```
 
+Parameter Substitution
+<http://www.tldp.org/LDP/abs/html/parameter-substitution.html>
+
 ### CSV and AWK
 - Count the number of fields in the first line:
 ```bash
@@ -277,6 +280,37 @@ Create symbolic link towards absolute path of physical file
 ln -s $(realpath <targetfile>) <creationdir/linkname>
 ```
 
+## Process
+
+```
+ps faux
+ps -ef
+ps -A u
+```
+Display only process of a specific command, sorted by %CPU, without header
+Extract a pattern from command line
+```
+$ ps h -o pid,comm,args -C nginx k -pcpu
+  686 nginx           nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+  687 nginx           nginx: worker process
+  688 nginx           nginx: worker process
+  689 nginx           nginx: worker process
+  690 nginx           nginx: worker process
+
+$ ps h -o pid,pcpu,pmem,rss,args -C nginx k -pcpu | sed 's/nginx: \([^ ]*\) process.*/\1/g'
+  686  0.0  0.3  2260 master
+  687  0.0  0.4  3220 worker
+  688  0.0  0.4  3216 worker
+  689  0.0  0.4  3220 worker
+  690  0.0  0.4  3220 worker
+```
+
+## Monitoring
+Disk space left
+```bash
+$ df -Ph | grep " /$" | awk '{ sub(/%/, "", $5); if ($5.0 > 85) {alert="\033[1;31m"} {print alert $6, $4, (100-$5)"%\033[0m"}}'
+/ 3.7G 30%
+```
 
 ## Encoding
 ### Hexadecimal display
@@ -367,4 +401,27 @@ $ nc -zvn -w1 host.example.com 20-25,80,443
 Listening on localhost on port 8080, keep listening
 ```
 $ nc -lk 8080
+$ while true; do nc -l 8080 < file.txt; done
+$ while true; do echo "$(date)" | nc -l 8080; done
+```
+Transfer the content of a directory to another host through tar.gz
+```
+$ nc -l 3000 | tar xzvf -
+$ tar czvf - dir2transfer | nc hostReceiver 3000
+```
+
+### Nmap
+
+```
+nmap 192.168.0.0/25 -sP      # Ping scan (sP = sn) -sP option is now obsolete and renamed as -sn
+nmap 192.168.0.* -sn         # No port scan after host discovery, consists of an ICMP echo request, TCP SYN to port 443, TCP ACK to port 80, and an ICMP timestamp request by default. When executed by an unprivileged user, only SYN packets are sent (using a connect call) to ports 80 and 443 on the target.
+nmap 192.168.0.0/25 -p22,80  # Scan specific ports
+nmap 192.168.0.0/25 -Pn      # Skip host discovery
+```
+The flags -sP and -P0 are now known as -sn and -Pn respectively.
+
+### ARP (Address Resolution Protocol)
+Print ARP table content
+```
+arp -n
 ```
