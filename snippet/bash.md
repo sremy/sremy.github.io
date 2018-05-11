@@ -174,7 +174,7 @@ Replace in vim
 
 Find and delete broken symbolic links
 ```bash
-find . -type l -xtype l -exec ls -l --color {}\;
+find . -type l -xtype l -exec ls -l --color {} \;
 find . -type l -xtype l -delete
 ```
 
@@ -183,7 +183,7 @@ Find compatible with filenames containing spaces and executes an action on each 
 find . -print0 | while IFS= read -r -d '' file; do <dosomething> "$file"; done
 ```
 
-Find symbolic links pointing to empty files
+Find empty files and symbolic links pointing to empty files
 ```bash
 find -L . -size 0 -exec ls -l {} \;
 ```
@@ -269,7 +269,13 @@ done | less
 ```
 
 ## Links
+```
 ln -s <targetfile> <creationdir/linkname>
+```
+Create symbolic link towards absolute path of physical file
+```
+ln -s $(realpath <targetfile>) <creationdir/linkname>
+```
 
 
 ## Encoding
