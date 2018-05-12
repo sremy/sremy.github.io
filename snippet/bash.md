@@ -132,6 +132,21 @@ awk -F"\t" '{count[$1]++} END{for (a in count) print a, count[a]}' <file>
 zcat <file.gz> | awk -F"\t" '{count[$1]++} END{for (a in count) printf "%-20s %20s\n", a, count[a]}' | sort
 ```
 
+Use this awk script to check if a CSV contains the same number of columns on each line:
+[check_column_count.sh](/scripts/check_column_count.sh)
+```bash
+$ ./check_column_count.sh sample.csv
+   column count     lines count               %
+              3              20         95.2381
+              4               1          4.7619
+Columns count is not uniform, but in large majority it is 3 columns.
+1 Outlier Line(s):
+M,Alphonse,1932,plop
+
+To send all 1 outliner lines by mail:
+echo "The number of columns in this file should be 3." | mail seb@mail.com -s "Outlier lines in sample.csv" -a <(awk -F"," "NF != 3 {print \$0}" "sample.csv")
+```
+
 ## Search & Replace
 Search files based on modification date
 ```bash
