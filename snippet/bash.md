@@ -154,6 +154,14 @@ $ echo -e "Text \t with    large     spaces." | tr -s [:blank:] " "
 Text with large spaces.
 ```
 
+Extract a substring between two patterns
+(sed doesn't recognize the lazy `*?` quantifier)
+```bash
+$ s="This is the word I want to extract."
+$ echo "$s" | sed 's/.*the \([^ ]*\) I.*/\1/g'
+word
+```
+
 Delete lines containing a pattern:
 ```bash
 for i in files*.csv;
