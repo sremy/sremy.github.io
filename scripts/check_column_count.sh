@@ -6,8 +6,9 @@
 # CSV and CSV.GZ files are supported
 
 PERCENTAGE_TRESHOLD=90;
+FIELD_SEPARATOR="\t"
 
-awk -F"," -v percentage_treshold=$PERCENTAGE_TRESHOLD -v input_file="$1" '
+awk -F$FIELD_SEPARATOR -v percentage_treshold=$PERCENTAGE_TRESHOLD -v input_file="$1" '
 BEGIN{
   printf "%15s %15s %15s\n", "column count", "lines count", "%"
 }
@@ -35,6 +36,8 @@ END{
     printf "Columns count is \033[1muniform\033[0m: \033[1;32m%s\033[0m columns.\n", uniform;
   }
   if (majority != "") {
+    for(n=0;n<=255;n++) {ord[sprintf("%c",n)]=n; }
+    field_sep = sprintf ("\\x%x", ord[FS])
     printf "Columns count is \033[1mnot uniform\033[0m, but in large majority it is \033[1;32m%s\033[0m columns.\n", majority;
     print ("\033[4m" nb_outlier_lines " Outlier Line(s):\033[0m")
     system("zcat -f \"" input_file "\"| awk -F\""FS"\" \" NF != " majority " {print \$0}\" | head -10")
@@ -45,9 +48,8 @@ END{
       uncompressed_file = "\""input_file"\"";
     }
     print("\nTo send all " nb_outlier_lines " outliner lines by mail:");
-    print("echo \"The number of columns in this file should be " majority ".\" | mail seb@mail.com -s \"Outlier lines in "input_file"\" -a <(awk -F\""FS"\" \"NF != " majority " {print \$0}\" " uncompressed_file ")")
-    #print("echo \"The number of columns in this file should be " majority ".\" | mail seb@mail.com -s \"Outlier lines in "input_file"\" -a <( zcat -f \"" input_file "\" | awk -F\""FS"\" \"NF != " majority " {print \$0}\" )")
+    print("echo \"The number of columns in this file should be " majority ".\" | mail seb@mail.com -s \"Outlier lines in "input_file"\" -a <(awk -F\""field_sep"\" \"NF != " majority " {print \$0}\" " uncompressed_file ")")
+    #print("echo \"The number of columns in this file should be " majority ".\" | mail seb@mail.com -s \"Outlier lines in "input_file"\" -a <( zcat -f \"" input_file "\" | awk -F\""field_sep"\" \"NF != " majority " {print \$0}\" )")
   }
 }
 ' <(zcat -f "$1")
-
