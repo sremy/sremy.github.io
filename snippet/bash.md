@@ -1,24 +1,34 @@
 ## Bash useful commands
 
-Sort files recursively
-- Latest files at the top
+### Bash customization & Colors
+
+The blue color is often not readable on dark terminal, we need to tell it to vim:
 ```bash
-function findLatest () {
-    find -L $1 ! -type d -printf "%T@ %Tc %11s %p\n" | sort -k 1nr | sed 's/^[^ ]* //' less
-}
+echo -e "set nocompatible\nsyntax on\nset background=dark" >> ~/.vimrc
 ```
-- Biggest files at the top
+For ls colors, we can init the colors configuration file and replace dark blue with cyan:
 ```bash
-find -L . ! -type d -printf "%Tc %11s %p\n" | sort -r -n -k2
-find -L . ! -type d -ls | sort -r -n -k7
+dircolors -p | sed 's/;34/;36/g' | sed 's/LINK 01;36/LINK 04;36/g' > ~/.dircolors
 ```
 
-Builtin functions
-```bash
-for n in {1..100}
-do
-    echo $n $((n*n)) $[n*(n+1)/2]
-done
+Colors in .bashrc
+For Debian .bashrc skeleton, see <https://bazaar.launchpad.net/~doko/+junk/pkg-bash-debian/view/head:/skel.bashrc>
+```
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
 ```
 
 Make bash your default shell if you don't have admin rights:
@@ -33,6 +43,41 @@ then
   exec "$SHELL" --login
   source /etc/bashrc
 fi
+```
+
+Bash Prompt
+```bash
+PS1="\[\e]0;\u@\h: \w\a\]\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w \$\[\033[00m\] "
+PS1="\[\e]0;\u@\h: \w\a\]\t \[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w \$\[\e[00m\] "
+
+$ echo -en "\e" | hexdump -dC
+0000000   00027
+$ echo -en "\033" | hexdump -dC
+0000000   00027
+```
+> 27 	033 	1B 	0011011 	ESC 	Escape (échappement)
+
+Ordinal and character functions
+```bash
+chr() { printf \\$(printf '%03o' $1); }
+ord() { printf '%d' "'$1"; }
+```
+
+Print characters table between 32 and 128 decimal code
+```bash
+for n in {32..128}
+do
+    if [ "$n" -eq "32" ]; then printf "dd oo hx c\n"; fi;
+    printf "%d %o %x \\$(printf '%03o' $n)\n" $n $n $n;
+done
+```
+
+### Built-in functions
+```bash
+for n in {1..100}
+do
+    echo $n $((n*n)) $[n*(n+1)/2]
+done
 ```
 
 Expression-based substring deletion
@@ -60,6 +105,52 @@ $ echo ${#variable}
 
 Parameter Substitution
 <http://www.tldp.org/LDP/abs/html/parameter-substitution.html>
+
+### SSH
+
+Create a Ed25519 key pair in ~/.ssh/
+```
+$ ssh-keygen -t ed25519
+```
+Send the public key to the remote server
+```
+$ ssh-copy-id login@remote.org # sends the public key in remote ~/.ssh/authorized_keys
+$ ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2222 login@remote.org
+```
+Be sure to have authorized_keys only readable and writable by the owner
+Especially, .ssh and authorized_keys must not be writable by other.
+```
+mkdir ~/.ssh
+chmod 700 ~/.ssh
+cat ~/id_ed25519.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+```
+
+SSH host keys
+```
+$ ssh-keyscan 192.168.0.15         # from client
+$ cat /etc/ssh/ssh_host_*key.pub   # from server
+```
+Key fingerprint
+```
+$ ssh-keygen -lf .ssh/id_ed25519
+$ ssh-keygen -lf .ssh/authorized_keys
+```
+
+
+## Files
+Sort files recursively
+- Latest files at the top
+```bash
+function findLatest () {
+    find -L $1 ! -type d -printf "%T@ %Tc %11s %p\n" | sort -k 1nr | sed 's/^[^ ]* //' less
+}
+```
+- Biggest files at the top
+```bash
+find -L . ! -type d -printf "%Tc %11s %p\n" | sort -r -n -k2
+find -L . ! -type d -ls | sort -r -n -k7
+```
 
 ### CSV and AWK
 - Count the number of fields in the first line:
@@ -143,19 +234,18 @@ Columns count is not uniform, but in large majority it is 3 columns.
 1 Outlier Line(s):
 M,Alphonse,1932,plop
 
-To send all 1 outliner lines by mail:
-echo "The number of columns in this file should be 3." | mail seb@mail.com -s "Outlier lines in sample.csv" -a <(awk -F"," "NF != 3 {print \$0}" "sample.csv")
+To send all 1 outlier lines by mail:
+echo "The number of columns in this file should be 3." | mail -s "Outlier lines in sample.csv" -a <(awk -F"," "NF != 3 {print \$0}" "sample.csv") seb@mail.com
 ```
 
 ## Search & Replace
 Search files based on modification date
 ```bash
-find ~/folder -newermt "Jan 20, 2018 00:00" -type f -print | grep "/subfolder/\|/subdir/" > result_$(date +"%Y%m%d").txt
+find ~/folder -newermt "Jan 20, 2018 00:00" -type f -path "/subfolder/\|/subdir/" -print > result_$(date +"%Y%m%d").txt
 find ~/folder -newermt "Jan 20, 2018 00:00" ! -newermt "Jan 26, 2018 00:00" -type f -print 
 
 find -type f -printf "%T@ %Tc %p\n" | sort -k 1nr | sed 's/^[^ ]* //' | head -n 100 |less
 ```
-
 
 
 Find/Replace in files with sed or tr
@@ -237,15 +327,18 @@ tar -ztvf file.tar.gz
 tar -jtvf file.tar.bz2
 ```
 
+Create a compressed tar
+```
+tar -zcvf ../tarball.tar.gz file1 file2
+tar -Jcvf ../tarball.tar.xz --owner=:0 --group=:0 -C /ignore/path/ keep/path/
+```
 Extract the content of tar.gz file in a specific folder
 ```
 tar -zxvf tarball.tar.gz -C <directory>
+tar -zxvf tarball.tar.gz -C <directory> --strip-components=NUMBER # strip NUMBER leading components from file names
 ```
-Create a tar.gz 
-```
-tar -zcvf ../tarball.tar.gz file1 file2
-```
-Gzip/Gunzip a file keeping the original file
+
+Gzip/Gunzip a file **k**eeping the original file
 ```
 gzip -k file
 gunzip -k file.gz
@@ -300,18 +393,27 @@ ln -s <targetfile> <creationdir/linkname>
 ```
 Create symbolic link towards absolute path of physical file
 ```
-ln -s $(realpath <targetfile>) <creationdir/linkname>
+ln -s $(realpath <targetfile>) <creationdir/linkname>  # since GNU coreutils 8.15
+ln -s $(readlink -f <targetfile>) <creationdir/linkname>
 ```
 
 ## Process
 
 ```
-ps faux
-ps -ef
-ps -A u
+$ ps faux  # Forest tree format, BSD syntax
+$ ps -A u  # -A = -e = Select all processes
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.8  27136  6056 ?        Ss   Feb10   3:12 /sbin/init
+$ ps -eF   # Standard Unix syntax: all processes, extra full-format listing
+UID        PID  PPID  C    SZ   RSS PSR STIME TTY          TIME CMD
+root         1     0  0  6784  6056   2 Feb10 ?        00:03:12 /sbin/init
+$ ps a  # Lift the BSD-style "only yourself" restriction
+$ ps x  # Lift the BSD-style "must have a tty" restriction
+$ ps u  # Display the BSD-style user-oriented format
+$ ps --no-headers  # without header, useful in script
 ```
-Display only process of a specific command, sorted by %CPU, without header
-Extract a pattern from command line
+Display only process of a specific command (with -C), sorted by %CPU, without header
+Extract a pattern from command line with sed
 ```
 $ ps h -o pid,comm,args -C nginx k -pcpu
   686 nginx           nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
@@ -327,6 +429,13 @@ $ ps h -o pid,pcpu,pmem,rss,args -C nginx k -pcpu | sed 's/nginx: \([^ ]*\) proc
   689  0.0  0.4  3220 worker
   690  0.0  0.4  3220 worker
 ```
+
+To find which process is using a file, a directory or a socket:
+```
+$ fuser file
+$ fuser -k file  #  Kill processes accessing the file
+```
+
 
 ## Monitoring
 Disk space left
@@ -370,13 +479,8 @@ $ iconv -f UTF8 -t ISO8859-15 charset.txt | hexdump -C
 ```
 $ dig +noall +answer google.com
 google.com.             46      IN      A       216.58.198.206
-$ host 216.58.198.206
-206.198.58.216.in-addr.arpa domain name pointer par10s27-in-f14.1e100.net.
-206.198.58.216.in-addr.arpa domain name pointer par10s27-in-f206.1e100.net.
-$ dig -x 216.58.198.206
-;; ANSWER SECTION:
-206.198.58.216.in-addr.arpa. 79054 IN   PTR     par10s27-in-f206.1e100.net.
-206.198.58.216.in-addr.arpa. 79054 IN   PTR     par10s27-in-f14.1e100.net.
+$ dig +short google.com
+216.58.204.142
 $ nslookup google.com
 Server:         192.168.0.254
 Address:        192.168.0.254#53
@@ -386,6 +490,14 @@ Name:   google.com
 Address: 216.58.198.206
 Name:   google.com
 Address: 2a00:1450:4007:80c::200e
+
+$ host 216.58.198.206
+206.198.58.216.in-addr.arpa domain name pointer par10s27-in-f14.1e100.net.
+206.198.58.216.in-addr.arpa domain name pointer par10s27-in-f206.1e100.net.
+$ dig -x 216.58.198.206
+;; ANSWER SECTION:
+206.198.58.216.in-addr.arpa. 79054 IN   PTR     par10s27-in-f206.1e100.net.
+206.198.58.216.in-addr.arpa. 79054 IN   PTR     par10s27-in-f14.1e100.net.
 ```
 
 ### Netcat
@@ -447,4 +559,6 @@ The flags -sP and -P0 are now known as -sn and -Pn respectively.
 Print ARP table content
 ```
 arp -n
+ip neighbour
+ip n
 ```

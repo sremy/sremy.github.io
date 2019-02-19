@@ -47,9 +47,9 @@ END{
     else {
       uncompressed_file = "\""input_file"\"";
     }
-    print("\nTo send all " nb_outlier_lines " outliner lines by mail:");
-    print("echo \"The number of columns in this file should be " majority ".\" | mail seb@mail.com -s \"Outlier lines in "input_file"\" -a <(awk -F\""field_sep"\" \"NF != " majority " {print \$0}\" " uncompressed_file ")")
-    #print("echo \"The number of columns in this file should be " majority ".\" | mail seb@mail.com -s \"Outlier lines in "input_file"\" -a <( zcat -f \"" input_file "\" | awk -F\""field_sep"\" \"NF != " majority " {print \$0}\" )")
+    print("\nTo send all " nb_outlier_lines " outlier lines by mail:");
+    print("echo \"The number of columns in this file should be " majority ".\" | mail -s \"Outlier lines in "input_file"\" -a <(awk -F\""field_sep"\" \"NF != " majority " {print \$0}\" " uncompressed_file ") seb@mail.com")
+    #print("echo \"The number of columns in this file should be " majority ".\" | mail -s \"Outlier lines in "input_file"\" -a <( zcat -f \"" input_file "\" | awk -F\""field_sep"\" \"NF != " majority " {print \$0}\" ) seb@mail.com")
   }
 }
 ' <(zcat -f "$1")
