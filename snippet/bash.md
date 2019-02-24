@@ -126,6 +126,12 @@ cat ~/id_ed25519.pub >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 ```
 
+To extract the public key from a private key:
+$ ssh-keygen -yf .ssh/id_ed25519
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHCrIlv9jr3P8zKIjizsiozEgHjeuFnmwledmpqHyknN
+$ cat .ssh/id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHCrIlv9jr3P8zKIjizsiozEgHjeuFnmwledmpqHyknN churchkey
+
 SSH host keys
 ```
 $ ssh-keyscan 192.168.0.15         # from client
