@@ -112,7 +112,7 @@ Create a Ed25519 key pair in ~/.ssh/
 ```
 $ ssh-keygen -t ed25519
 ```
-Send the public key to the remote server
+Send the public key to the remote server, to make it accessible by key
 ```
 $ ssh-copy-id login@remote.org # sends the public key in remote ~/.ssh/authorized_keys
 $ ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 2222 login@remote.org
@@ -149,12 +149,13 @@ Sort files recursively
 - Latest files at the top
 ```bash
 function findLatest () {
-    find -L $1 ! -type d -printf "%T@ %Tc %11s %p\n" | sort -k 1nr | sed 's/^[^ ]* //' less
+    find -L $1 ! -type d -printf "%T@ %Tc %11s %p\n" | sort -k 1nr | sed 's/^[^ ]* //' | less
 }
 ```
 - Biggest files at the top
 ```bash
-find -L . ! -type d -printf "%Tc %11s %p\n" | sort -r -n -k2
+find -L . ! -type d -printf "%12s %p\n" | sort -r -n -k1
+find -L . ! -type d -printf "%Ta %Td-%Tb-%TY %TT %12s %p\n" | sort -r -n -k4  # With change time
 find -L . ! -type d -ls | sort -r -n -k7
 ```
 
