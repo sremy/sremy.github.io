@@ -73,6 +73,8 @@ done
 ```
 
 ### Built-in functions
+
+Loop on integer range and compute arithmetic formulas
 ```bash
 for n in {1..100}
 do
@@ -143,6 +145,16 @@ $ ssh-keygen -lf .ssh/id_ed25519
 $ ssh-keygen -lf .ssh/authorized_keys
 ```
 
+Send a file to a list of servers and execute commands remotely
+```bash
+echo -e "192.168.0.15\n192.168.0.31" > servers.txt
+for s in $(cat servers.txt)
+do
+    echo "## $s ##"
+    scp myfile user@$s:
+    ssh user@$s ls -l myfile
+done
+```
 
 ## Files
 Sort files recursively
