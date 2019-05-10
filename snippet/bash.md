@@ -13,7 +13,7 @@ dircolors -p | sed 's/;34/;36/g' | sed 's/LINK 01;36/LINK 04;36/g' > ~/.dircolor
 
 Colors in .bashrc
 For Debian .bashrc skeleton, see <https://bazaar.launchpad.net/~doko/+junk/pkg-bash-debian/view/head:/skel.bashrc>
-```
+```bash
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -44,6 +44,17 @@ then
   source /etc/bashrc
 fi
 ```
+
+Bash startup file:
+```bash
+bash --rcfile <file>  # run custom file at login instead of ~/.bashrc
+bash --rcfile <( echo "source /etc/bashrc; date; PS1='\[\e]0;\u@\h: \w\a\]\t \[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w \$\[\e[00m\] ' " )
+```
+
+Customize motd, message displayed at login
+
+Create a new script in the directory `/etc/profile.d/` or execute it from ~/.bashrc,
+Example: [motd.sh](https://github.com/sremy/scripts/raw/master/linux/motd.sh)
 
 Bash Prompt
 ```bash
@@ -129,20 +140,25 @@ chmod 600 ~/.ssh/authorized_keys
 ```
 
 To extract the public key from a private key:
+```bash
 $ ssh-keygen -yf .ssh/id_ed25519
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHCrIlv9jr3P8zKIjizsiozEgHjeuFnmwledmpqHyknN
 $ cat .ssh/id_ed25519.pub
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHCrIlv9jr3P8zKIjizsiozEgHjeuFnmwledmpqHyknN churchkey
-
+```
 SSH host keys
 ```
 $ ssh-keyscan 192.168.0.15         # from client
 $ cat /etc/ssh/ssh_host_*key.pub   # from server
 ```
-Key fingerprint
-```
-$ ssh-keygen -lf .ssh/id_ed25519
+Key fingerprint: MD5 displayed in hexadecimal, SHA-1 and SHA-256 in base64
+```bash
+$ ssh-keygen -lf .ssh/id_ed25519.pub  # by default shows SHA-256 hash
 $ ssh-keygen -lf .ssh/authorized_keys
+
+# Fingerprints can be hashed in MD5 (Hexa) or SHA1/SHA256 (Base64) with -E option
+$ ssh-keygen -lf ~/.ssh/id_ed25519.pub -E md5                  # MD5 Hexa
+$ awk '{print $2}' ~/.ssh/id_ed25519.pub | base64 -d | md5sum  # MD5 Hexa, same result manually
 ```
 
 Send a file to a list of servers and execute commands remotely
