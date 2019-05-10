@@ -276,6 +276,10 @@ $ echo "chat" | tr [a-z] [A-Z]
 CHAT
 $ echo -e "Text \t with    large     spaces." | tr -s [:blank:] " "
 Text with large spaces.
+$ echo -e "1\t2\t3\t4" | tr \\t \;
+1;2;3;4
+$ echo -e "1\t2\t3\t4" | tr '\t' '|'
+1|2|3|4
 ```
 
 Extract a substring between two patterns
