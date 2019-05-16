@@ -119,6 +119,16 @@ $ echo ${#variable}
 Parameter Substitution
 <http://www.tldp.org/LDP/abs/html/parameter-substitution.html>
 
+### Date
+
+Print current date/time with custom format
+```bash
+date +"%y%m%d-%H%M"
+date +"%y%m%d-%H%M%S"
+date +"%Y-%m-%d_%H-%M-%S"
+date -u # UTC
+```
+
 ### SSH
 
 Create a Ed25519 key pair in ~/.ssh/
