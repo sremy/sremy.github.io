@@ -129,6 +129,12 @@ date +"%Y-%m-%d_%H-%M-%S"
 date -u # UTC
 ```
 
+System Timezone
+```bash
+$ cat /etc/timezone
+Europe/Paris
+```
+
 ### SSH
 
 Create a Ed25519 key pair in ~/.ssh/
