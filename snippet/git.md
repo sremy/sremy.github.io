@@ -131,10 +131,41 @@ git config --global alias.alias "! git config --get-regexp ^alias\. | sed -e s/^
 
 ### git log graphically
 
-In ~/.gitconfig
+Alias in ~/.gitconfig
 ``` ini
 [alias]
-	log1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
-	log2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+	log1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
+	log2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
+	p = log --pretty=format:\"%m %C(bold blue)%h%C(reset) %<(24)%cd %><(15,trunc)%C(yellow)%an%C(reset)%C(bold red)%d%Creset %s\" --date=local
 	lg = !"git log1"
+	l = !"git log1"
+	lga = !"git lg --all"
+	la = !"git lg --all"
+	lg1 = !"git log1"
+	lg2 = !"git log2"
+```
+
+Git log for release or comparing branches
+``` bash
+git log v2.5..master --pretty=format:"%m %C(bold blue)%h%C(reset) %<(24)%cd %><(15,trunc)%C(yellow)%an%C(reset)%C(bold red)%d%Creset %s" --date=local
+git log branch...master --left-right --date=local --oneline
+git log dev...master --left-right --pretty=format:"%m %C(bold blue)%h%C(reset) %<(24)%cd %><(15,trunc)%C(yellow)%an%C(reset)%C(bold red)%d%Creset %s" --date=local --
+```
+
+### git bundle
+
+Bundle a repo to copy it to another off-line machine
+```
+git bundle create <file> <git-rev-list-args>
+git bundle verify <file>
+git bundle unbundle <file> [<refname>…​] # => Use git clone or git fetch to restore
+git bundle list-heads <file> [<refname>…​]
+```
+examples:
+```
+$ git bundle create mybundle --all  # Bundles all branches
+$ git clone mybundle .  # Creates a remote origin based on this file
+$ git remote -v
+origin  /home/me/git/mybundle (fetch)
+origin  /home/me/git/mybundle (push)
 ```
