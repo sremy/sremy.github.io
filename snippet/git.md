@@ -128,6 +128,9 @@ git config --global alias.unstage 'reset HEAD --'
 git config --global alias.last 'log -1 HEAD'
 git config --global alias.alias "! git config --get-regexp ^alias\. | sed -e s/^alias\.// -e s/\ /\ =\ /"
 ```
+### git log
+
+[git log](./git-log) details page
 
 ### git log graphically
 
@@ -137,6 +140,7 @@ Alias in ~/.gitconfig
 	log1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%cr)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
 	log2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%cD%C(reset) %C(bold green)(%cr)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
 	p = log --pretty=format:\"%m %C(bold blue)%h%C(reset) %<(24)%cd %><(15,trunc)%C(yellow)%an%C(reset)%C(bold red)%d%C(reset) %s\" --date=local
+	g = log --graph --oneline
 	lg = !"git log1"
 	l = !"git log1"
 	lga = !"git lg --all"
