@@ -156,13 +156,98 @@ git log branch...master --left-right --date=local --oneline
 git log dev...master --left-right --pretty=format:"%m %C(bold blue)%h%C(reset) %<(24)%cd %><(15,trunc)%C(yellow)%an%C(reset)%C(bold red)%d%Creset %s" --date=local --
 ```
 
+### git credential
+
+Where are credentials stored?
+```
+$ git config credential.helper
+manager
+$ git credential-manager version
+Git Credential Manager for Windows version 1.18.4
+```
+
+To change the credential helper:
+```
+git config --global credential.helper manager
+git config --global credential.helper wincred
+git config --global credential.helper osxkeychain	
+git config --global credential.helper 'cache --timeout=300'  # 5 min in memory via socket ~/.cache/git/credential/socket
+git config --global credential.helper store  # persisted in ~/.git-credentials
+```
+
+To reveal a credential:
+```
+$ git credential fill
+url=https://github.com
+⏎
+```
+
+or with the manager helper:
+```
+$ git credential-manager get
+protocol=https
+host=github.com
+⏎
+protocol=https
+host=github.com
+path=
+username=PersonalAccessToken
+password=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+```
+
+or with the store helper:
+```
+$ git credential-store get
+protocol=https
+host=bitbucket.org
+⏎
+username=you@example.com
+password=P4ss
+```
+
+To **remove** a credential saved for a specific host, use `git credential reject`:
+```
+$ git credential reject
+protocol=https
+host=github.com
+⏎
+# or
+url=https://github.com
+⏎
+```
+
+Usage:
+```
+git credential <fill|approve|reject>
+git credential-manager <get/fill|store/approve|erase/reject>
+git credential-manager clear https://github.com
+git credential-wincred <get|store|erase>
+```
+
+git credential-manager doc:
+<https://github.com/microsoft/Git-Credential-Manager-for-Windows/blob/master/Docs/CredentialManager.md>
+
+
+_Bonus_: Communicate with the cache helper through the Unix socket to retrieve a stored password:
+```
+$ nc -U ~/.cache/git/credential/socket
+action=get
+timeout=
+protocol=https
+host=bitbucket.org
+⏎
+username=you@gmail.com
+password=P@ss!
+```
+
 ### git bundle
 
 Bundle a repo to copy it to another off-line machine
 ```
 git bundle create <file> <git-rev-list-args>
 git bundle verify <file>
-git bundle unbundle <file> [<refname>…​] # => Use git clone or git fetch to restore
+git bundle unbundle <file> [<refname>…​] # => Instead, use git clone or git fetch to restore the bundle
 git bundle list-heads <file> [<refname>…​]
 ```
 examples:
