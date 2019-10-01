@@ -27,11 +27,13 @@ $ git log --numstat
 
 ## Search in git history
 ```bash
-git log -G "regex"   # search if this regex matches a line in code diff
-git log -S "string"  # search if this string has been added/removed in code diff
-git log -S "regex" --pickaxe-regex  # search if this regex has been added/removed in code diff
-git log --grep "Message"    # search this regexp in commit messages
-git log --grep "message" -i # search this regexp in commit messages ignoring case
+git log -G "regex"   # Search if this regex matches a line in code diff
+git log -S "string"  # Search if this string has been added/removed in code diff
+git log -S "regex" --pickaxe-regex  # Search if this regex has been added/removed in code diff
+git log --grep "Message"    # Search this regex in commit messages
+git log --grep "message" -i # Search this regex in commit messages ignoring case
+
+git log --all --full-history -- **/filename*  # Search commits that added/deleted a file
 ```
 
 ## Options

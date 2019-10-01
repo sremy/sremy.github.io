@@ -1,5 +1,14 @@
 # Git useful commands
 
+### List files with their git status
+
+```
+$ cd <directory>
+$ git ls-files [--stage|-s]
+
+$ git ls-tree --name-only [branch]
+```
+
 ### Updates
 
 #### pull --rebase
@@ -58,12 +67,52 @@ $ git config --global push.default simple # the default value since git 2.0
 ```
 <https://git-scm.com/docs/git-config#Documentation/git-config.txt-pushdefault>
 
-#### Conflicts
+#### Reset, Checkout, Conflicts
 
 ```
 git rebase --continue  # continue the rebase after having resolved a merge conflict
 git rebase --abort     # abort the rebase operation and reset HEAD to the original branch
+
+git checkout -- <file>   # Revert the file content with index (or HEAD if index = HEAD)
+git checkout <commit> -- <file>   # Revert the file content with provided commit revision
+
+git reset = git reset --mixed HEAD # Reset the staging area but leave the working directory unchanged
+git reset -- <file>        # Unstage a file, leave the working directory unchanged
+git reset [HEAD] --        # Unstage all files
+git reset --hard [HEAD]    # Discards all local changes in the working directory
+git reset --hard <commit>  # Discards all history and changes (and index) back to the specified commit
+git reset <commit>         # --mixed is the default: Undoes all commits after <commit>, unstage changes, preserving local changes
+git reset --mixed <commit> # Set the HEAD to the intended commit and unstage your changes from last commits (align on <commit>)
+git reset --soft <commit>  # Only set the HEAD to the intended commit but keep your changes staged from last commits (for squashing)
+
+       Head  Idx  WorkingChages
+--soft    x   o   o  (for squashing)
+--mixed   x   x   o  (default)
+--hard    x   x   x  /!\
+x: changed / o: unchanged
 ```
+<https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified>
+```
+git clean     # Cleans the working tree by removing files that are not under version control
+git clean -n  # Dry run: see what files will be deleted
+git clean -f  # Delete all untracked files
+git clean -fd # Remove untracked directories in addition to untracked files.
+
+git revert <commit> # revert the changes made in a revision by adding a new commit
+```
+
+### Git revisions
+```
+@       = HEAD
+@{1}    = immediate prior value taken by HEAD (works with git show but not with log)
+ref@{n} = n-th prior value taken by that ref (as listed in git reflog)
+<rev>^  = <rev>~ = first parent of <rev>
+<rev>^n = the <n>th parent of <rev> staying on the direct parent
+<rev>~n = jump n times to the first parent, reach the <n>th generation ancestor
+
+example: A^^^ = A^1^1^1 = A~~~ = A~3
+```
+<https://git-scm.com/docs/gitrevisions>
 
 ### Manual operations
 
@@ -127,10 +176,11 @@ git config --global alias.ci commit
 git config --global alias.unstage 'reset HEAD --'
 git config --global alias.last 'log -1 HEAD'
 git config --global alias.alias "! git config --get-regexp ^alias\. | sed -e s/^alias\.// -e s/\ /\ =\ /"
+git config --global alias.ls 'git ls-tree --name-only HEAD'
 ```
 ### git log
 
-[git log](./git-log) details page
+See the [git log](./git-log) detailed page
 
 ### git log graphically
 
@@ -147,6 +197,7 @@ Alias in ~/.gitconfig
 	la = !"git lg --all"
 	lg1 = !"git log1"
 	lg2 = !"git log2"
+	d = diff --cached
 ```
 
 Git log for release or comparing branches
