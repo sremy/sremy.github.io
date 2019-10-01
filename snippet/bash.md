@@ -289,6 +289,19 @@ To send all 1 outlier lines by mail:
 echo "The number of columns in this file should be 3." | mail -s "Outlier lines in sample.csv" -a <(awk -F"," "NF != 3 {print \$0}" "sample.csv") seb@mail.com
 ```
 
+### Head & Tail
+
+```
+head -5      # Print the first 5 lines
+head -n 5    # Print the first 5 lines
+head -n -5   # Print all but the last 5 lines, ie from start to END-5
+
+tail -5      # Print the last 5 lines
+tail -n -5   # Print the last 5 lines
+tail +5      # Print from 5th line to the end
+tail -n +5   # Print from 5th line to the end
+```
+
 ## Search & Replace
 Search files based on modification date
 ```bash
