@@ -1,6 +1,6 @@
-# Ansible #
+# Ansible
 
-## Configuration ##
+## Configuration
 https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-configuration-settings
 
 Searched in the following order:
@@ -57,7 +57,7 @@ Here is the order of precedence from least to greatest (the last listed variable
 https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
 
 
-## Inventory ##
+## Inventory
 
 ```
 $ ansible-inventory [options] <action> [host|group]
@@ -67,7 +67,7 @@ $ ansible-inventory --host <HOST>
 $ ansible-playbook the_playbook.yml -i inventory.ini
 ```
 
-## Modules ##
+## Modules
 File
 ```yaml
 - hosts: all
@@ -121,7 +121,7 @@ Copy
 ```
 
 
-## Vault ##
+## Vault
 
 Creation of an encrypted file:
 ```

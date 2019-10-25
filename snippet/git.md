@@ -67,6 +67,11 @@ $ git config --global push.default simple # the default value since git 2.0
 ```
 <https://git-scm.com/docs/git-config#Documentation/git-config.txt-pushdefault>
 
+```
+$ git push -u origin master  # --set-upstream
+$ git pull
+```
+
 #### Reset, Checkout, Conflicts
 
 ```
@@ -99,6 +104,11 @@ git clean -f  # Delete all untracked files
 git clean -fd # Remove untracked directories in addition to untracked files.
 
 git revert <commit> # revert the changes made in a revision by adding a new commit
+```
+
+Force push, with lease: will not push if the remote was modified since your latest fetch.
+```
+git push --force-with-lease
 ```
 
 ### Git revisions

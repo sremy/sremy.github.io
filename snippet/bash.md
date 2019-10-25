@@ -31,6 +31,13 @@ alias la='ls -A'
 alias l='ls -CF'
 ```
 
+### Useful functions
+
+Create directory and jump inside
+```bash
+md () { [ $# = 1 ] && mkdir -p "$@" && cd "$@" || echo "Error - no directory passed!"; }
+```
+
 Make bash your default shell if you don't have admin rights:
 ```bash
 $ chsh
@@ -272,6 +279,12 @@ awk -F"\t" 'NR>1{count[$1]++} END{for (a in count) print a, count[a]}' <file>
 ```bash
 awk -F"\t" '{count[$1]++} END{for (a in count) print a, count[a]}' <file>
 zcat <file.gz> | awk -F"\t" '{count[$1]++} END{for (a in count) printf "%-20s %20s\n", a, count[a]}' | sort
+```
+
+- Filter, Group by, Count and Print in apparition order
+```bash
+awk -F'[\\ ] ' '$0 ~ ".*pattern.*" {a=$1; if(!(a in count)) {keyInOrder[i++]=a}; count[a]++} \
+ END{for(i=0; i<length(keyInOrder); i++) {a=keyInOrder[i]; print a, count[a]}}' test.csv
 ```
 
 Use this awk script to check if a CSV contains the same number of columns on each line:
