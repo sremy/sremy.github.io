@@ -299,7 +299,8 @@ Columns count is not uniform, but in large majority it is 3 columns.
 M,Alphonse,1932,plop
 
 To send all 1 outlier lines by mail:
-echo "The number of columns in this file should be 3." | mail -s "Outlier lines in sample.csv" -a <(awk -F"," "NF != 3 {print \$0}" "sample.csv") seb@mail.com
+echo "The number of columns in this file should be 3." |
+ mail -s "Outlier lines in sample.csv" -a <(awk -F"," "NF != 3 {print \$0}" "sample.csv") seb@mail.com
 ```
 
 ### Head & Tail
@@ -448,7 +449,8 @@ comm -23 <(ls ~/folder/ | sort) <(ssh user@server "ls ~/folder/" | sort)
 
 Compare files list between servers and copy missing files (older than 1 min) to the other server
 ```bash
-comm -23 <(find ~/folder -type f -mmin +1 -printf "%f\n" | sort) <(ssh user@server "ls ~/folder/" | sort) | grep pattern | xargs -I % scp ~/folder/% user@server:~/folder/
+comm -23 <(find ~/folder -type f -mmin +1 -printf "%f\n" | sort) <(ssh user@server "ls ~/folder/" | sort) |
+ grep pattern | xargs -I % scp ~/folder/% user@server:~/folder/
 ```
 
 Compare files in two folders based on MD5:
