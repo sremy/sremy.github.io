@@ -60,7 +60,7 @@ bash --rcfile <( echo "source /etc/bashrc; date; PS1='\[\e]0;\u@\h: \w\a\]\t \[\
 
 Customize motd, message displayed at login
 
-Create a new script in the directory `/etc/profile.d/` or execute it from ~/.bashrc,
+Create a new script in the directory `/etc/profile.d/` or execute it from `~/.bashrc`,
 Example: [motd.sh](https://github.com/sremy/scripts/raw/master/linux/motd.sh)
 
 Bash Prompt
@@ -73,7 +73,7 @@ $ echo -en "\e" | hexdump -dC
 $ echo -en "\033" | hexdump -dC
 0000000   00027
 ```
-> 27 	033 	1B 	0011011 	ESC 	Escape (échappement)
+`27 	033 	1B 	0011011 	ESC 	Escape (échappement)`
 
 Ordinal and character functions
 ```bash
@@ -534,6 +534,13 @@ hexdump -C <file>
 xxd -g1 <file>
 ```
 
+### Hexadecimal input string to bytes and convert back to hexa/ascii representation
+```bash
+$ echo "412F5A2e617a20302D39" | xxd -r -p | xxd -g1
+$ xxd -r -p <file_with_hexadecimal_content> | xxd -g1
+00000000: 41 2f 5a 2e 61 7a 20 30 2d 39                    A/Z.az 0-9
+```
+
 ### Charset conversion
 ```bash
 $ env | grep LANG
@@ -583,6 +590,15 @@ $ dig -x 216.58.198.206
 206.198.58.216.in-addr.arpa. 79054 IN   PTR     par10s27-in-f14.1e100.net.
 ```
 
+### HTTP
+Download a file over HTTP
+```
+wget https://www.google.com/favicon.ico
+curl -O -J https://www.google.com/favicon.ico
+```
+- -O: write output to a local file named like the remote file
+- -J: tell the -O option to use the server-specified Content-Disposition filename instead of extracting a filename from the URL.
+
 ### Netcat
 ```
 $ printf "GET / HTTP/1.0\r\nHost: google.com\r\n\r\n" | nc 216.58.198.206 80
@@ -619,8 +635,8 @@ $ nc -zvn -w1 host.example.com 20-25,80,443
 Listening on localhost on port 8080, keep listening
 ```
 $ nc -lk 8080
-$ while true; do nc -l 8080 < file.txt; done
-$ while true; do echo "$(date)" | nc -l 8080; done
+$ while true; do nc -lN 8080 < file.txt; done
+$ while true; do echo "$(date)" | nc -lN 8080; done
 ```
 Transfer the content of a directory to another host through tar.gz
 ```

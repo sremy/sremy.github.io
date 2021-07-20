@@ -67,8 +67,9 @@ $ git config --global push.default simple # the default value since git 2.0
 ```
 <https://git-scm.com/docs/git-config#Documentation/git-config.txt-pushdefault>
 
+Set upstream repository for `git pull` and `git push`
 ```
-$ git push -u origin master  # --set-upstream
+$ git push -u origin master  # -u or --set-upstream
 $ git pull
 ```
 
@@ -125,6 +126,11 @@ example: A^^^ = A^1^1^1 = A~~~ = A~3
 <https://git-scm.com/docs/gitrevisions>
 
 ### Manual operations
+
+Specify author name and email for a single commit:
+```
+git -c "user.name=Your Name" -c "user.email=Your email" commit
+```
 
 Create a feature branch
 ```
