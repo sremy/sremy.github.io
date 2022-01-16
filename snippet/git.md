@@ -1,5 +1,24 @@
 # Git useful commands
 
+## SSH Configuration
+
+To configure a specific ssh key to use with git, if you have several keys in ~/.shh folder, you can add this paragraph in ssh config file.
+Precise your login user name and the path to the ssh private key:
+
+$ vi ~/.ssh/config
+```
+Host github.com
+  HostName github.com
+  User user@gmail.com
+  IdentityFile ~/.ssh/id_ed25519
+  IdentitiesOnly yes
+```
+Let's test this configuration with ssh:
+```
+$ ssh -T git@github.com
+Hi user! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
 ### List files with their git status
 
 ```
