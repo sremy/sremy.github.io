@@ -149,6 +149,12 @@ example: A^^^ = A^1^1^1 = A~~~ = A~3
 Specify author name and email for a single commit:
 ```
 git -c "user.name=Your Name" -c "user.email=Your email" commit
+git commit --author="Mario Bros <mario@bros.org>"
+```
+
+Change the author of the last commit:
+```
+git commit --amend --author="Mario Bros <mario@bros.org>"
 ```
 
 Create a feature branch
