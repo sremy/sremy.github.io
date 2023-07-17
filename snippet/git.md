@@ -92,6 +92,12 @@ $ git push -u origin master  # -u or --set-upstream
 $ git pull
 ```
 
+Reversely, to unset the upstream information for the current branch or <branchname>:
+```
+git branch --unset-upstream
+git branch --unset-upstream <branchname>
+```
+
 #### Reset, Checkout, Conflicts
 
 ```
