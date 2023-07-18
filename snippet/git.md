@@ -1,6 +1,13 @@
-# Git useful commands
+# Git
+## Git Configuration
 
-## SSH Configuration
+### Set username and email
+```
+git config --global user.name "FIRST_NAME LAST_NAME"
+git config --global user.email me@example.com
+```
+
+### SSH Configuration
 
 To configure a specific ssh key to use with git, if you have several keys in ~/.shh folder, you can add this paragraph in ssh config file.
 Precise your login user name and the path to the ssh private key:
@@ -19,6 +26,7 @@ $ ssh -T git@github.com
 Hi user! You've successfully authenticated, but GitHub does not provide shell access.
 ```
 
+## Git useful commands
 ### List files with their git status
 
 ```
