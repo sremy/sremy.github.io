@@ -104,3 +104,28 @@ import org.apache.commons.io.output.ThresholdingOutputStream;
 ```java
 int hashCodeBeforeOverride = System.identityHashCode(object);
 ```
+
+## Tricks
+
+### Log4j debugging 
+Add `log4j.debug` to the JVM variables:
+```
+java -Dlog4j.debug ClassName
+```
+
+Since log4j 2.10:
+```
+java -Dlog4j2.debug ClassName
+```
+
+
+### Configuration of Pattern layout
+- <https://logging.apache.org/log4j/2.x/manual/pattern-layout.html#converter-logger>
+- <https://logging.apache.org/log4j/2.x/manual/pattern-layout.html#format-modifiers>
+
+Examples: fast or detailed and slower
+```xml
+<PatternLayout pattern="%d %-5level [%thread] %c{1.} - %m%n"/>
+<PatternLayout pattern="%d %-5level [%-20thread] %file:%line - %m%n"/>
+<PatternLayout pattern="%d %-5level [%30.30t] %location - %m%n"/>
+```
