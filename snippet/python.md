@@ -1,5 +1,6 @@
+# Python
 
-# PIP Configuration
+## PIP Configuration
 
 pip.conf/pip.ini should be located in the following place:
 - On Unix: `$HOME/.config/pip/pip.conf`
@@ -27,9 +28,9 @@ Create a virtualenv with Python 3 venv:
 python -m venv <env-name>
 ```
 
-# Language
+## Language
 
-## Positional and keyword arguments
+### Positional and keyword arguments
 
 keyword argument: an argument preceded by an identifier (e.g. name=) in a function call or passed as a value in a dictionary preceded by \*\*
 ```python
@@ -44,14 +45,14 @@ complex(*(3, 5))
 ```
 
 Default argument in Function definition:
-- Any number of arguments in a function can have a default value. But once we have a default argument, all the arguments to its right must also have default values.
+- Any number of arguments in a function can have a default value. But once we have a default argument, all the arguments to its right must also have default values.<br>
 Otherwise: `SyntaxError: non-default argument follows default argument`
 
-- Non-default arguments must be provided in function call (with positional or keyword arguments)
+- Non-default arguments must be provided in function call (with positional or keyword arguments)<br>
 Otherwise: `TypeError: simpleFunction() missing 1 required positional argument: 'first'`
 
 - Keyword arguments in Function call:
-We can mix positional arguments with keyword arguments during a function call. Keyword arguments must follow positional arguments.
+We can mix positional arguments with keyword arguments during a function call. Keyword arguments must follow positional arguments.<br>
 Otherwise: `SyntaxError: non-keyword arg after keyword arg`
 
 
@@ -69,7 +70,7 @@ def combined_example(pos_only, /, standard, *, kwd_only):
 ```
 
 
-## Class variable & instance variable
+### Class variable & instance variable
 
 ```python
 class Product:
@@ -83,9 +84,8 @@ class Product:
 ```
 
 
-## Static methods & class method
+### Static methods & class method
 ```python
-
 class MyClass:
     
     def method(self): # regular method: can access to instance and class variables
@@ -105,9 +105,8 @@ class MyClass:
         myobject.method()
         # or 
         MyClass.method(myobject)
-
-
 ```
+
 ```python
 class Product:
 
@@ -132,9 +131,9 @@ def main():
     print(baguette)
 ```
 
-## Strings Format
+### Strings Format
 
-### %-formatting
+#### %-formatting
 
 ```python
 product = 'keyboard'
@@ -142,14 +141,14 @@ price = 100
 "The price of %s is %i." % (product, price)
 ```
 
-### str.format() 
+#### str.format() 
 Since Python 2.6
 
 ```python
 "The price of {} is {}.".format(product, price)
 ```
 
-### f-strings
+#### f-strings
 Since Python 3.6
 
 ```python
@@ -162,7 +161,7 @@ f'The price of {product!r} is {price}.'
 ```
 
 
-## Call the super() method
+### Call the super() method
 
 ```python
 super().__init__(params, ...)
@@ -175,8 +174,8 @@ Call the base class
 super().__init()
 ```
 
-# Examples, tips
-## Format json 
+## Examples, tips
+### Format json 
 ```bash
 curl -s http://www.meteo-paris.com/ajax/realtime | python -c 'import sys, json; print json.load(sys.stdin)["station"]["temp_webcam"]'
 ```
@@ -194,14 +193,14 @@ $ python -m http.server --directory /tmp/
 ```
 https://docs.python.org/3/library/http.server.html
 
-## Write to a binary file
+### Write to a binary file
 ```python
 file = open("file.bin","wb")
 file.write(byte)
 ```
 
 
-## System calls in Python!
+### System calls in Python!
 
 Allows to perform file control and I/O control on file descriptors
 ```python
@@ -213,13 +212,13 @@ fcntl.ioctl(
 ```
   
 
-## Data types
+### Data types
 
 https://docs.python.org/3/library/datatypes.html
 
 
 
-## Sort
+### Built-in functions
 
 Sort a list in place:
 ```python
@@ -261,13 +260,28 @@ listKeyValues = sorted(dico.items(), key=lambda kv: kv[1], reverse=True)
 print(listKeyValues)  # [('mardi', 34), ('lundi', 33), ('mercredi', 31), ('jeudi', 29), ('samedi', 28), ('vendredi', 26), ('dimanche', 26)]
 ```
 
+Filter an iterable :
+```python
+intuple = (3, 2, 9, 1, 4)
+it = iter(intuple)
+r = filter(lambda a : a % 3 != 0, it)
+l = list(r)
+print(l) # [2, 1, 4]
+```
 
-# Dict
+Select the maximum with a key function:
+```python
+maxi = max(l, key=lambda a: a % 3)
+print(maxi) # 2
+```
+
+
+## Dict
 
 A mapping object maps hashable values to arbitrary objects. Mappings are mutable objects. Empty dict can be created with {}.
 The objects returned by dict.keys(), dict.values() and dict.items() are view objects. They provide a dynamic view on the dictionary’s entries, which means that when the dictionary changes, the view reflects these changes.
 
-## defaultdict
+### defaultdict
 
 ```python
 from collections import defaultdict
@@ -299,11 +313,11 @@ for i, c in enumerate("Hello world"):
 print(dico_position_character) # {'h': [0], 'e': [1], 'l': [2, 3, 9], 'o': [4, 7], ' ': [5], 'w': [6], 'r': [8], 'd': [10]}
 ```
 
-## OrderedDict
+### OrderedDict
 Ordered dictionaries are just like regular dictionaries but have some extra capabilities relating to ordering operations. They have become less important now that the built-in dict class gained the ability to remember **insertion order** (this new behavior became guaranteed in Python 3.7).
 
 
-## Collections maintaining natural order
+### Collections maintaining natural order
 Python standard library has not Java equivalent of TreeMap, TreeSet; but external libraries offer these lacking features, for example: http://www.grantjenks.com/docs/sortedcontainers/
 
 ```bash
@@ -404,7 +418,6 @@ prints:
 - lundi       33
 - mardi       34
 ```
-
 
 
 ## Packaging
